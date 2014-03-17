@@ -1,81 +1,152 @@
 
+/**
+ * Expose `extract`.
+ */
+
 module.exports = extract;
 
-var comma = ','.charCodeAt(0);
-var obrace = '{'.charCodeAt(0);
-var cbrace = '}'.charCodeAt(0);
-var obracket = '['.charCodeAt(0);
-var cbracket = ']'.charCodeAt(0);
-var colon = ':'.charCodeAt(0);
-var mark = '"'.charCodeAt(0);
+/**
+ * Char codes.
+ */
+
+var comma = code(',');
+var obrace = code('{');
+var cbrace = code('}');
+var obracket = code('[');
+var cbracket = code(']');
+var colon = code(':');
+var mark = code('"');
+
+/**
+ * Extract the value of `key` in the json `buf`.
+ *
+ * @param {Buffer} buf
+ * @param {String} key
+ * @return {Mixed}
+ * @api public
+ */
 
 function extract(buf, key){
   var isKey = true;
   var inString = false;
   var level = 0;
   var chars = strToCharCodes(key);
+  var c;
 
   for (var i = 0; i < buf.length; i++) {
-    if (buf[i] == mark) {
+    c = buf[i];
+    if (c == mark) {
       inString = !inString;
       continue;
     }
 
     if (!inString) {
-      switch (buf[i]) {
-        case colon: isKey = false; break;
-        case comma: isKey = true; break;
-        case obrace: level++; break;
-        case cbrace: level--; break;
-      }
+      if (c == colon) isKey = false;
+      else if (c == comma) isKey = true;
+      else if (c == obrace) level++;
+      else if (c == cbrace) level--;
     }
-    if (!isKey || level > 1 || !isMatch(chars, buf, i)) continue;
+    if (!isKey || level > 1 || !isMatch(buf, i, chars)) continue;
 
     var start = i + key.length + 2;
-    var end = findEnd(start, buf);
+    var end = findEnd(buf, start);
 
-    return deserialize(buf, start, end);
+    return parse(buf, start, end);
   }
 }
 
-function findEnd(start, buf) {
-  var c;
-  var level = 0;
+/**
+ * Get the char code of `str`.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
 
-  for (var i = start; i < buf.length; i++) {
-    c = buf[i];
-    if (c == obrace || c == obracket) level++;
-    else if (c == cbrace || c == cbracket) level--;
-    if (level > 0) continue;
-    if (c == comma || c == cbrace || c == cbracket) {
-      var end = i;
-      if (buf[start] == obrace || buf[start] == obracket) end++;
-      return end;
-    }
-  }
+function code(str) {
+  return str.charCodeAt(0);
 }
 
-function deserialize(buf, start, end) {
-  var json = buf.toString('utf8', start, end);
-  if (json[0] == '"') return json.substr(1, json.length - 2);
-  return JSON.parse(json);
-}
+/**
+ * Convert `str` to an array of char codes.
+ *
+ * @param {String} str
+ * @return {Array[Number]}
+ * @api private
+ */
 
 function strToCharCodes(str) {
   var chars = [];
   for (var i = 0; i < str.length; i++) {
-    chars.push(str.charCodeAt(i));
+    chars[i] = str.charCodeAt(i);
   }
   return chars;
 }
 
-function isMatch(chars, buf, i){
-  var match = true;
+/**
+ * Check if `buf[i+n]` equals `chars`.
+ *
+ * @param {Array[Number]} chars
+ * @param {Buffer} buf
+ * @param {Number} i
+ * @return {Boolean}
+ * @api private
+ */
+
+function isMatch(buf, i, chars){
   for (var j = 0; j < chars.length; j++) {
-    if (buf[i + j] != chars[j]) {
-      match = false;
-      break;
+    if (buf[i + j] != chars[j]) return false;
+  }
+  return true;
+}
+
+/**
+ * Find the end index of the object
+ * that starts at `start` in `buf`.
+ *
+ * @param {Buffer} buf
+ * @param {Number} start
+ * @return {Number}
+ * @api private
+ */
+
+function findEnd(buf, start) {
+  var level = 0;
+  var s = buf[start];
+  var c;
+
+  for (var i = start; i < buf.length; i++) {
+    c = buf[i];
+    if (c == obrace || c == obracket) {
+      level++;
+      continue;
+    } else if (c == cbrace || c == cbracket) {
+      if (--level > 0) continue;
+    }
+    if (
+      level < 0
+      || level == 0 && (c == comma || c == cbrace || c == cbracket)
+    ) {
+      return s == obrace || s == obracket
+        ? i + 1
+        : i;
     }
   }
-  return match;
 }
+
+/**
+ * Parse the json in `buf` from `start` to `end`.
+ *
+ * @param {Buffer} buf
+ * @param {Number} start
+ * @param {Number} end
+ * @return {Mixed}
+ * @api private
+ */
+
+function parse(buf, start, end) {
+  var json = buf.toString('utf8', start, end);
+  if (json[0] == '"') return json.slice(1, json.length - 1);
+  return JSON.parse(json);
+}
+
