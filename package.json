@@ -6,5 +6,8 @@
   "license": "MIT",
   "devDependencies": {
     "mocha": "~1.18.0"
+  },
+  "scripts": {
+    "test": "make test"
   }
 }
