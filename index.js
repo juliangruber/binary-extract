@@ -2,16 +2,22 @@
 module.exports = extract;
 
 var comma = ','.charCodeAt(0);
+var obrace = '{'.charCodeAt(0);
 var cbrace = '}'.charCodeAt(0);
 var colon = ':'.charCodeAt(0);
 
 function extract(buf, key){
   var isKey = true;
+  var level = 0;
 
   for (var i = 0; i < buf.length; i++) {
-    if (buf[i] == colon) isKey = false;
-    if (buf[i] == comma) isKey = true;
-    if (!isKey) continue;
+    switch (buf[i]) {
+      case colon: isKey = false; break;
+      case comma: isKey = true; break;
+      case obrace: level++; break;
+      case cbrace: level--; break;
+    }
+    if (!isKey || level > 1) continue;
 
     var match = true;
     for (var j = 0; j < key.length; j++) {
