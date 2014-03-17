@@ -5,17 +5,26 @@ var comma = ','.charCodeAt(0);
 var obrace = '{'.charCodeAt(0);
 var cbrace = '}'.charCodeAt(0);
 var colon = ':'.charCodeAt(0);
+var mark = '"'.charCodeAt(0);
 
 function extract(buf, key){
   var isKey = true;
+  var inString = false;
   var level = 0;
 
   for (var i = 0; i < buf.length; i++) {
-    switch (buf[i]) {
-      case colon: isKey = false; break;
-      case comma: isKey = true; break;
-      case obrace: level++; break;
-      case cbrace: level--; break;
+    if (buf[i] == mark) {
+      inString = !inString;
+      continue;
+    }
+
+    if (!inString) {
+      switch (buf[i]) {
+        case colon: isKey = false; break;
+        case comma: isKey = true; break;
+        case obrace: level++; break;
+        case cbrace: level--; break;
+      }
     }
     if (!isKey || level > 1) continue;
 
