@@ -4,6 +4,8 @@ module.exports = extract;
 var comma = ','.charCodeAt(0);
 var obrace = '{'.charCodeAt(0);
 var cbrace = '}'.charCodeAt(0);
+var obracket = '['.charCodeAt(0);
+var cbracket = ']'.charCodeAt(0);
 var colon = ':'.charCodeAt(0);
 var mark = '"'.charCodeAt(0);
 
@@ -42,12 +44,17 @@ function extract(buf, key){
     level = 0;
     for (var j = start; j < buf.length; j++) {
       switch (buf[j]) {
-        case obrace: level++; break;
-        case cbrace: level--; break;
+        case obrace:
+        case obracket:
+          level++; break;
+        case cbrace:
+        case cbracket:
+          level--; break;
       }
-      if (!level && buf[j] == comma || buf[j] == cbrace) {
+      if (level > 0) continue;
+      if (buf[j] == comma || buf[j] == cbrace || buf[j] == cbracket) {
         end = j;
-        if (buf[start] == obrace) end++;
+        if (buf[start] == obrace || buf[start] == obracket) end++;
         break;
       }
     }

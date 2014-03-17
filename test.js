@@ -28,6 +28,10 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ foo: { bar: 'baz' }});
     equal(extract(buf, 'foo'), { bar: 'baz' });
   })
+  it('should extract arrays', function(){
+    var buf = toBuf({ foo: ['bar', 'baz']});
+    equal(extract(buf, 'foo'), ['bar', 'baz']);
+  })
 })
 
 function toBuf(obj){
