@@ -1,0 +1,10 @@
+{
+  "name": "binary-extract",
+  "description": "Extract a value from a binary json blob",
+  "version": "0.0.0",
+  "repository": "segmentio/binary-extract",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "~1.18.0"
+  }
+}
