@@ -25,7 +25,11 @@ var value = extract(buf, 'bar');
 ## Perf
 
   With the object from `bench.js`, `extract()` is ~2-4x faster than
-  `JSON.parse(buf.toString())`.
+  `JSON.parse(buf.toString())`. It is also way more memory efficient as the
+  blob stays out of the V8 heap.
+
+  The big perf gain comes mainly from not parsing everything and not
+  converting the buffer to a string.
 
 ## Installation
 
