@@ -39,9 +39,15 @@ function extract(buf, key){
 
     var start = i + key.length + 2;
     var end;
+    level = 0;
     for (var j = start; j < buf.length; j++) {
-      if (buf[j] == comma || buf[j] == cbrace) {
+      switch (buf[j]) {
+        case obrace: level++; break;
+        case cbrace: level--; break;
+      }
+      if (!level && buf[j] == comma || buf[j] == cbrace) {
         end = j;
+        if (buf[start] == obrace) end++;
         break;
       }
     }

@@ -1,6 +1,6 @@
 
 var assert = require('assert');
-var equal = assert.equal;
+var equal = assert.deepEqual;
 var extract = require('./');
 
 describe('extract(buf, key)', function(){
@@ -23,6 +23,10 @@ describe('extract(buf, key)', function(){
   it('should ignore strings with special chars', function(){
     var buf = toBuf({ foo: ',bar', bar: 'baz' });
     equal(extract(buf, 'bar'), 'baz');
+  })
+  it('should extract objects', function(){
+    var buf = toBuf({ foo: { bar: 'baz' }});
+    equal(extract(buf, 'foo'), { bar: 'baz' });
   })
 })
 
