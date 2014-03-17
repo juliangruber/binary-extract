@@ -9,5 +9,8 @@
   },
   "scripts": {
     "test": "make test"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
