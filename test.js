@@ -19,6 +19,8 @@ describe('extract(buf, key)', function(){
   it('should ignore too nested values', function(){
     var buf = toBuf({ foo: { beep: 'boop', bar: 'oops' }, bar: 'baz' });
     equal(extract(buf, 'bar'), 'baz');
+    buf = toBuf({ foo: [{ bar: 'oops' }], bar: 'baz' });
+    equal(extract(buf, 'bar'), 'baz');
   })
   it('should ignore strings with special chars', function(){
     var buf = toBuf({ foo: ',bar', bar: 'baz' });
