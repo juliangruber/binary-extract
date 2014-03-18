@@ -16,7 +16,7 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ foo: 'bar', bar: 'baz' });
     equal(extract(buf, 'bar'), 'baz');
   })
-  it('should ignore too nested values', function(){
+  it('should ignore too deeply nested values', function(){
     var buf = toBuf({ foo: { beep: 'boop', bar: 'oops' }, bar: 'baz' });
     equal(extract(buf, 'bar'), 'baz');
     buf = toBuf({ foo: [{ bar: 'oops' }], bar: 'baz' });
