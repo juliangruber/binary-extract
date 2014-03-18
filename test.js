@@ -34,6 +34,12 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ foo: ['bar', 'baz']});
     equal(extract(buf, 'foo'), ['bar', 'baz']);
   })
+  it('should escape with backslash', function(){
+    var buf = toBuf({ beep: '\"', foo: 'bar' });
+    equal(extract(buf, 'foo'), 'bar');
+    var buf = toBuf({ foo: 'bar\"baz' });
+    equal(extract(buf, 'foo'), 'bar\"baz');
+  });
 })
 
 function toBuf(obj){

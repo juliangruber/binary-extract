@@ -16,6 +16,7 @@ var obracket = code('[');
 var cbracket = code(']');
 var colon = code(':');
 var mark = code('"');
+var backslash = code('\\');
 
 /**
  * Extract the value of `key` in the json `buf`.
@@ -35,6 +36,12 @@ function extract(buf, key){
 
   for (var i = 0; i < buf.length; i++) {
     c = buf[i];
+
+    if (c == backslash) {
+      i++;
+      continue;
+    }
+
     if (c == mark) {
       inString = !inString;
       continue;
@@ -146,7 +153,6 @@ function findEnd(buf, start) {
 
 function parse(buf, start, end) {
   var json = buf.toString('utf8', start, end);
-  if (json[0] == '"') return json.slice(1, json.length - 1);
   return JSON.parse(json);
 }
 
