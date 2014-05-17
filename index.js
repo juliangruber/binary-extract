@@ -19,20 +19,30 @@ var mark = code('"');
 var backslash = code('\\');
 
 /**
- * Extract the value of `key` in the json `buf`.
+ * Extract the value of `keys` in the json `buf`.
+ *
+ * If `keys` is a single key, returns the value.
+ * If `keys` is an array of keys, returns an array of values.
  *
  * @param {Buffer} buf
- * @param {String} key
+ * @param {Array|String} keys
  * @return {Mixed}
  * @api public
  */
 
-function extract(buf, key){
+function extract(buf, keys){
+  if (!Array.isArray(keys)) keys = [keys];
+
+  var values = [];
+  var matched = {};
   var isKey = true;
   var inString = false;
   var level = 0;
-  var chars = strToCharCodes(key);
+  var chars = keys.map(strToCharCodes);
   var c;
+  var match;
+  var start;
+  var end;
 
   for (var i = 0; i < buf.length; i++) {
     c = buf[i];
@@ -53,13 +63,32 @@ function extract(buf, key){
       else if (c == obrace) level++;
       else if (c == cbrace) level--;
     }
-    if (!isKey || level > 1 || !isMatch(buf, i, chars)) continue;
+    if (!isKey || level > 1) continue;
 
-    var start = i + key.length + 2;
-    var end = findEnd(buf, start);
+    for (var j = 0; j < keys.length; j++) {
+      if (!matched[keys[j]] && isMatch(buf, i, chars[j])) {
+        match = {
+          key: keys[j],
+          chars: chars[j],
+          idx: j
+        };
+        matched[keys[i]] = true;
+        break;
+      };
+    }
+    if (!match) continue;
 
-    return parse(buf, start, end);
+    start = i + match.key.length + 2;
+    end = findEnd(buf, start);
+
+    values[match.idx] = parse(buf, start, end);
+    match = null;
+    if (values.length == keys.length) break;
   }
+
+  return keys.length != 1
+    ? values
+    : values[0];
 }
 
 /**
@@ -91,7 +120,7 @@ function strToCharCodes(str) {
 }
 
 /**
- * Check if `buf[i+n]` equals `chars`.
+ * Check if `buf[i-1] - buf[i+n]` equals `"chars"`.
  *
  * @param {Array[Number]} chars
  * @param {Buffer} buf
@@ -101,9 +130,11 @@ function strToCharCodes(str) {
  */
 
 function isMatch(buf, i, chars){
+  if (buf[i - 1] != mark) return false;
   for (var j = 0; j < chars.length; j++) {
     if (buf[i + j] != chars[j]) return false;
   }
+  if (buf[i + chars.length] != mark) return false;
   return true;
 }
 

@@ -8,6 +8,10 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ foo: 'bar' });
     equal(extract(buf, 'foo'), 'bar');
   })
+  it('should extract multiple values', function(){
+    var buf = toBuf({ a: '0', b: '1', c: '2' });
+    equal(extract(buf, ['a', 'c']), ['0', '2']);
+  })
   it('should end on ,', function(){
     var buf = toBuf({ foo: 'bar', bar: 'baz' });
     equal(extract(buf, 'foo'), 'bar');
