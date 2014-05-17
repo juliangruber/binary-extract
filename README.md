@@ -1,7 +1,7 @@
 
 # binary-extract
 
-  Extract a value from a buffer of json without parsing the whole thing.
+  Extract one or more values from a buffer of json without parsing the whole thing.
 
   [![build status](https://secure.travis-ci.org/segmentio/binary-extract.png)](http://travis-ci.org/segmentio/binary-extract)
 
@@ -20,6 +20,9 @@ var buf = new Buffer(JSON.stringify({
 
 var value = extract(buf, 'bar');
 // => 'baz'
+
+var values = extract(buf, ['foo', 'nested'])
+// => ["bar", {"bar":"nope"}]
 ```
 
 ## Perf
@@ -39,11 +42,14 @@ $ npm install binary-extract
 
 ## API
 
-### extract(buf, key)
+### extract(buf, keys)
 
-  Extract the value of `key` in the json `buf`.
+  Extract the value of `keys` in the json `buf`.
 
   The value can be any valid JSON structure.
+
+  If `keys` is a __String__, returns a value. If `keys` is an __Array__ of
+  keys, returns an array of values.
 
 ## License
 
