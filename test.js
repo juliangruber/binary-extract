@@ -44,6 +44,10 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ foo: 'bar\"baz' });
     equal(extract(buf, 'foo'), 'bar\"baz');
   });
+  it('should ignore sub key matches', function(){
+    var buf = toBuf({ _a: '0', a_: '1', _a_: '2', a: '3' });
+    equal(extract(buf, 'a'), '3');
+  });
 })
 
 function toBuf(obj){
