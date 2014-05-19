@@ -5,6 +5,8 @@
  * add passing test for false positive sub key matches
  * docs
  * add multi match support
+ * add near/far benchmarks
+ * use matcha for benchmarks
 
 0.0.1 / 2014-03-18
 ==================
