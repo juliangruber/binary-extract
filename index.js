@@ -86,9 +86,9 @@ function extract(buf, keys){
     if (values.length == keys.length) break;
   }
 
-  return keys.length != 1
-    ? values
-    : values[0];
+  return keys.length == 1
+    ? values[0]
+    : values;
 }
 
 /**
