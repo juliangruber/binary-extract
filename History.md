@@ -1,4 +1,10 @@
 
+0.1.1 / 2014-05-28
+==================
+
+ * always return arrays when fed arrays
+ * refactor
+
 0.1.0 / 2014-05-19
 ==================
 
