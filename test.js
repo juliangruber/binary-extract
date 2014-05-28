@@ -12,6 +12,10 @@ describe('extract(buf, key)', function(){
     var buf = toBuf({ a: '0', b: '1', c: '2' });
     equal(extract(buf, ['a', 'c']), ['0', '2']);
   })
+  it('should always return arrays when fed arrays', function(){
+    var buf = toBuf({ foo: 'bar' });
+    equal(extract(buf, ['foo']), ['bar']);
+  })
   it('should end on ,', function(){
     var buf = toBuf({ foo: 'bar', bar: 'baz' });
     equal(extract(buf, 'foo'), 'bar');

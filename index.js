@@ -31,7 +31,8 @@ var backslash = code('\\');
  */
 
 function extract(buf, keys){
-  if (!Array.isArray(keys)) keys = [keys];
+  var multi = Array.isArray(keys);
+  if (!multi) keys = [keys];
 
   var values = [];
   var matched = {};
@@ -86,9 +87,9 @@ function extract(buf, keys){
     if (values.length == keys.length) break;
   }
 
-  return keys.length == 1
-    ? values[0]
-    : values;
+  return multi
+    ? values
+    : values[0];
 }
 
 /**
