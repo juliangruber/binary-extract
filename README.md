@@ -3,7 +3,7 @@
 
   Extract one or more values from a buffer of json without parsing the whole thing.
 
-  [![build status](https://secure.travis-ci.org/segmentio/binary-extract.png)](http://travis-ci.org/segmentio/binary-extract)
+  [![build status](https://secure.travis-ci.org/juliangruber/binary-extract.png)](http://travis-ci.org/juliangruber/binary-extract)
 
 ## Example
 
