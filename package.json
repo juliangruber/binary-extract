@@ -6,7 +6,7 @@
   "license": "MIT",
   "devDependencies": {
     "mocha": "2.4.5",
-    "matcha": "~0.6.0"
+    "matcha": "~0.7.0"
   },
   "scripts": {
     "test": "make test"
