@@ -5,8 +5,8 @@
   "repository": "segmentio/binary-extract",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "2.5.1",
-    "matcha": "~0.7.0"
+    "matcha": "~0.7.0",
+    "mocha": "^2.5.2"
   },
   "scripts": {
     "test": "make test"
